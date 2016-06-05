@@ -12,4 +12,4 @@ monthlyDF = normalized.groupby(by=normalized.date.map(lambda x: (x.year, x.month
 
 print monthlyDF.head(5)
 
-monthlyDF[1:].to_csv('./resources/monthly_2011_2015.csv')
+monthlyDF.to_csv('./resources/monthly_2011_2015.csv')
