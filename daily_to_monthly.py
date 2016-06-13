@@ -1,7 +1,7 @@
 import pandas as pd
 
-dfrm = pd.read_csv('./resources/daily2.csv', usecols=['date', 'TICKER', 'PRC'], parse_dates=True)
-dfrm['date'] = pd.to_datetime(dfrm['date'], format='%d%b%Y')
+dfrm = pd.read_csv('./resources/daily4.lcsv.csv', usecols=['date', 'TICKER', 'PRC'], parse_dates=True)
+dfrm['date'] = pd.to_datetime(dfrm['date'], format='%Y%m%d')
 normalized = dfrm.pivot_table(index='date', columns='TICKER', values='PRC')
 normalized['date'] = normalized.index
 
