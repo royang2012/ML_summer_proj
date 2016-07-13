@@ -1,5 +1,7 @@
 import pandas as pd
 import technicals
+import numpy as np
+
 
 def technicalCal(stockData):
     dic = {'date': stockData.Date, 'Open': stockData.Open, 'Close': stockData.Close, 'High': stockData.High,
@@ -27,6 +29,15 @@ def technicalCal(stockData):
     df = technicals.COPP(df, 2)
     df = technicals.DONCH(df, 9)
     df = technicals.STDDEV(df, 9)
-
-
     return df
+
+def featureExt(stockData):
+    monthNum = len(stockData.index)
+    featureNum = 29
+    x = np.zeros((monthNum - 13, featureNum))
+    y = np.zeros((monthNum - 13, 1))
+    for j in range(12, monthNum - 1):
+        x[j - 12, :] = np.array(stockData.ix[j, 6:35].as_matrix())
+        y[j - 12] = (stockData['Close'].ix[j] - stockData['Close'].ix[j-1])/stockData['Close'].ix[j-1]
+    return x, y
+

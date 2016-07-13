@@ -7,7 +7,7 @@ companyList = pd.read_csv('./resources/SnP500History.csv')
 rowNum = companyList.shape[0]
 for i in range(0, rowNum):
     ticker = companyList.iloc[i]['Ticker']
-    s = singleStock(ticker, 1, 1, 2008, 7, 1, 2016, 'm')
+    s = singleStock(ticker, 1, 1, 2008, 7, 6, 2016, 'm')
     isValid = s.loading()
     if isValid == 1:
         validCompany.append(ticker)
