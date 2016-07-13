@@ -14,8 +14,7 @@ def technicalCal(stockData):
     df = technicals.PPSR(df)
     df = technicals.STOK(df)
     df = technicals.STO(df, 9)
-    df = technicals.TRIX(df, 9)
-    df = technicals.MassI(df)
+    df = technicals.TRIX(df, 3)
     df = technicals.Vortex(df, 9)
     df = technicals.RSI(df, 9)
     df = technicals.ACCDIST(df, 9)
@@ -25,7 +24,7 @@ def technicalCal(stockData):
     df = technicals.FORCE(df, 9)
     df = technicals.EOM(df, 9)
     df = technicals.CCI(df, 9)
-    df = technicals.COPP(df, 9)
+    df = technicals.COPP(df, 2)
     df = technicals.DONCH(df, 9)
     df = technicals.STDDEV(df, 9)
 
