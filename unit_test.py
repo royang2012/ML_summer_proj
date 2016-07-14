@@ -22,7 +22,8 @@ for i in range(0, stockNum):
     clf = linear_model.LinearRegression()
     clf.fit(xTrain, yTrain)
     coefficient[i, :] = clf.coef_
-
+# print xTrain.shape
+# print yTrain.shape
 # download testing data
 predictionReturn = np.zeros(stockNum)
 testStartMonth = 5

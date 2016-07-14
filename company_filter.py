@@ -10,7 +10,8 @@ for i in range(0, rowNum):
     s = singleStock(ticker, 1, 1, 2008, 7, 6, 2016, 'm')
     isValid = s.loading()
     if isValid == 1:
-        validCompany.append(ticker)
+        if s.Aclose.__len__()==103:
+            validCompany.append(ticker)
 validCompanyDf = pd.DataFrame(validCompany)
 validCompanyDf.to_csv('./resources/SnP500_his.csv', index=False, header=False)
 
