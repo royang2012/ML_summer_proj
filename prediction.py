@@ -1,7 +1,7 @@
 import numpy as np
 
+def prediction(model, testFeature):
+    return np.dot(model, testFeature)
 
-def prediction(pastData):
-    # create features
 
-    return np.mean(pastData[14:23])
+
