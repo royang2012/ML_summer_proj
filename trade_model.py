@@ -27,6 +27,7 @@ class monthlyModel:
         self.xTrain = np.zeros(1)
         self.yTrain = np.zeros(1)
         self.priceDf = pd.DataFrame()
+        self.xTest = np.zeros(1)
         self.percentDf = pd.DataFrame()
         self.testSpan = 12*(testYear2-testYear1) + testMonth2 - testMonth1
 
@@ -56,7 +57,6 @@ class monthlyModel:
 
 
     def trainFeaturePre(self):
-        coefficient = np.zeros((self.stockNum, self.stockNum))
         stockData = tc.technicalCal(self.multiStockTrain[0])
         (xTrains, yTrains) = tc.featureExt(stockData)
         self.xTrain = xTrains
@@ -67,7 +67,13 @@ class monthlyModel:
             (xTrains, yTrains) = tc.featureExt(stockData)
             self.xTrain = np.dstack((self.xTrain, xTrains))
             self.yTrain = np.dstack((self.yTrain, yTrains))
-        for i in range(0, self.stockNum - 1):
+        stockData = tc.technicalCal(self.multiStockTest[0])
+        (xTests, yTests) = tc.featureExt(stockData)
+        self.xTest = xTests
+        for i in range(0, self.stockNum):
+            stockData = tc.technicalCal(self.multiStockTest[i])
+            (xTests, yTests) = tc.featureExt(stockData)
+            self.xTest = np.dstack((self.xTest, xTests))
             for j in range(0, self.testSpan):
                 self.priceDf.set_value(j, i, self.multiStockTest[i].Close[j + 12])
         self.percentDf = self.priceDf.pct_change(axis=0)
