@@ -1,5 +1,6 @@
 import trade_model
 import pandas as pd
+import technicals
 import numpy as np
 from sklearn import linear_model
 # import test

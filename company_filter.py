@@ -12,7 +12,8 @@ for i in range(0, rowNum):
     if isValid == 1:
         if s.Aclose.__len__()==102:
             stockData = tc.technicalCal(s)
-            (xTrains, yTrains) = tc.featureExt(stockData)
+            featureNum = stockData.shape[1] - 6
+            (xTrains, yTrains) = tc.featureExt(stockData, featureNum)
             if np.isnan(xTrains).any() == False:
                 if np.isinf(xTrains).any() == False:
                     validCompany.append(ticker)

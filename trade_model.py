@@ -22,7 +22,7 @@ class monthlyModel:
         self.multiStockTrain = []
         self.multiStockTest = []
         self.stockNum = 0
-        self.featureNum = 29
+        self.featureNum = 0
 
         self.xTrain = np.zeros(1)
         self.yTrain = np.zeros(1)
@@ -53,26 +53,27 @@ class monthlyModel:
         f2 = open('./resources/multiStockTest', 'w')
         pickle.dump(self.multiStockTrain, f2)
 
-        return self.stockNum
+        return self.multiStockTrain[0]
 
 
     def trainFeaturePre(self):
         stockData = tc.technicalCal(self.multiStockTrain[0])
-        (xTrains, yTrains) = tc.featureExt(stockData)
+        self.featureNum = stockData.shape[1]-6
+        (xTrains, yTrains) = tc.featureExt(stockData, self.featureNum)
         self.xTrain = xTrains
         self.yTrain = yTrains
         for i in range(1, self.stockNum):
             # Construct the training data array
             stockData = tc.technicalCal(self.multiStockTrain[i])
-            (xTrains, yTrains) = tc.featureExt(stockData)
+            (xTrains, yTrains) = tc.featureExt(stockData, self.featureNum)
             self.xTrain = np.dstack((self.xTrain, xTrains))
             self.yTrain = np.dstack((self.yTrain, yTrains))
         stockData = tc.technicalCal(self.multiStockTest[0])
-        (xTests, yTests) = tc.featureExt(stockData)
+        (xTests, yTests) = tc.featureExt(stockData, self.featureNum)
         self.xTest = xTests
         for i in range(0, self.stockNum):
             stockData = tc.technicalCal(self.multiStockTest[i])
-            (xTests, yTests) = tc.featureExt(stockData)
+            (xTests, yTests) = tc.featureExt(stockData, self.featureNum)
             self.xTest = np.dstack((self.xTest, xTests))
             for j in range(0, self.testSpan):
                 self.priceDf.set_value(j, i, self.multiStockTest[i].Close[j + 12])
