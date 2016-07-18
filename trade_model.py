@@ -48,10 +48,7 @@ class monthlyModel:
             s2.loading()
             self.multiStockTest.append(s2)
             self.stockNum = len(self.multiStockTrain)
-        f1 = open('./resources/multiStockTrain', 'w')
-        pickle.dump(self.multiStockTrain, f1)
-        f2 = open('./resources/multiStockTest', 'w')
-        pickle.dump(self.multiStockTrain, f2)
+
 
         return self.multiStockTrain[0]
 
@@ -78,7 +75,25 @@ class monthlyModel:
             for j in range(0, self.testSpan):
                 self.priceDf.set_value(j, i, self.multiStockTest[i].Close[j + 12])
         self.percentDf = self.priceDf.pct_change(axis=0)
+        self.percentDf.to_csv('./resources/percentDf.csv')
+        f1 = open('./resources/multiStockTrain', 'w')
+        np.save(f1, self.xTrain)
+        f2 = open('./resources/multiStockTest', 'w')
+        np.save(f2, self.xTest)
+        f3 = open('./resources/multiStockTrainy', 'w')
+        np.save(f3, self.yTrain)
         return self.xTrain.shape, self.yTrain.shape
+
+    def trainFeaturePreHd(self):
+        f1 = open('./resources/multiStockTrain', 'r')
+        self.xTrain = np.load(f1)
+        f2 = open('./resources/multiStockTest', 'r')
+        self.xTest = np.load(f2)
+        f3 = open('./resources/multiStockTrainy', 'r')
+        self.yTrain = np.load(f3)
+        self.featureNum = self.xTrain.shape[1]
+        self.stockNum = self.xTrain.shape[2]+1
+        self.percentDf = pd.read_csv('./resources/percentDf.csv')
 
     def por10Returns(self, monthCount, predictedReturn):
         indices = heapq.nlargest(10, range(len(predictedReturn)), predictedReturn.take)
