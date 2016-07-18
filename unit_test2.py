@@ -38,7 +38,7 @@ reshapeXtrain = np.zeros((span*monthData.stockNum, monthData.featureNum))
 reshapeYtrain = np.zeros(span*monthData.stockNum)
 for i in range(0, monthData.stockNum):
     reshapeXtrain[i*span:(i+1)*span,:] = monthData.xTrain[:,:,i]
-    reshapeYtrain[i*span:(i+1)*span] = monthData.xTrain[:,0,i]
+    reshapeYtrain[i*span:(i+1)*span] = monthData.yTrain[:,0,i]
 # train the generalized linear model
 # clf = linear_model.LinearRegression()
 # clf.fit(reshapeXtrain, reshapeYtrain)

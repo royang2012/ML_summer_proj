@@ -28,6 +28,7 @@ class monthlyModel:
         self.yTrain = np.zeros(1)
         self.priceDf = pd.DataFrame()
         self.xTest = np.zeros(1)
+        self.yTest = np.zeros(1)
         self.percentDf = pd.DataFrame()
         self.testSpan = 12*(testYear2-testYear1) + testMonth2 - testMonth1
 
@@ -65,23 +66,27 @@ class monthlyModel:
             (xTrains, yTrains) = tc.featureExt(stockData, self.featureNum)
             self.xTrain = np.dstack((self.xTrain, xTrains))
             self.yTrain = np.dstack((self.yTrain, yTrains))
+
         stockData = tc.technicalCal(self.multiStockTest[0])
         (xTests, yTests) = tc.featureExt(stockData, self.featureNum)
         self.xTest = xTests
-        for i in range(0, self.stockNum):
+        self.yTest = yTests
+        for i in range(1, self.stockNum):
             stockData = tc.technicalCal(self.multiStockTest[i])
             (xTests, yTests) = tc.featureExt(stockData, self.featureNum)
             self.xTest = np.dstack((self.xTest, xTests))
-            for j in range(0, self.testSpan):
-                self.priceDf.set_value(j, i, self.multiStockTest[i].Close[j + 12])
-        self.percentDf = self.priceDf.pct_change(axis=0)
-        self.percentDf.to_csv('./resources/percentDf.csv')
-        f1 = open('./resources/multiStockTrain', 'w')
-        np.save(f1, self.xTrain)
-        f2 = open('./resources/multiStockTest', 'w')
-        np.save(f2, self.xTest)
-        f3 = open('./resources/multiStockTrainy', 'w')
-        np.save(f3, self.yTrain)
+            self.yTest = np.dstack((self.yTest, yTests))
+            # for j in range(0, self.testSpan):
+                # self.priceDf.set_value(j, i, self.multiStockTest[i].Close[j + 12])
+
+        self.percentDf = pd.DataFrame(self.yTest)
+        # self.percentDf.to_csv('./resources/percentDf.csv')
+        # f1 = open('./resources/multiStockTrain', 'w')
+        # np.save(f1, self.xTrain)
+        # f2 = open('./resources/multiStockTest', 'w')
+        # np.save(f2, self.xTest)
+        # f3 = open('./resources/multiStockTrainy', 'w')
+        # np.save(f3, self.yTrain)
         return self.xTrain.shape, self.yTrain.shape
 
     def trainFeaturePreHd(self):

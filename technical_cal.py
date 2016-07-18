@@ -42,7 +42,7 @@ def featureExt(stockData, featureNum):
     x = np.zeros((monthNum - 13, featureNum))
     y = np.zeros((monthNum - 13, 1))
     for j in range(12, monthNum - 1):
-        y[j - 12] = (stockData['Close'].ix[j] - stockData['Close'].ix[j-1])/stockData['Close'].ix[j-1]
+        y[j - 12] = (stockData['Close'].ix[j+1] - stockData['Close'].ix[j])/stockData['Close'].ix[j]
         # stockData.drop('Close', 1)
         x[j - 12, :] = np.array(stockData.ix[j, 6:].as_matrix())
     return x, y
