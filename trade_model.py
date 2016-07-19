@@ -30,6 +30,8 @@ class monthlyModel:
         self.xTest = np.zeros(1)
         self.yTest = np.zeros(1)
         self.percentDf = pd.DataFrame()
+
+        self.trainSpan = 12*(trainYear2-trainYear1) + trainMonth2 - trainMonth1
         self.testSpan = 12*(testYear2-testYear1) + testMonth2 - testMonth1
 
     def monthlyDataDownload(self):
@@ -44,10 +46,10 @@ class monthlyModel:
                              self.trainMonth2, 28, self.trainYear2, 'm')
             s1.loading()
             self.multiStockTrain.append(s1)
-            s2 = singleStock(tickerstring, self.testMonth1, 1, self.testYear1-1,
-                             self.testMonth2, 28, self.testYear2, 'm')
-            s2.loading()
-            self.multiStockTest.append(s2)
+            # s2 = singleStock(tickerstring, self.testMonth1, 1, self.testYear1-1,
+            #                  self.testMonth2, 28, self.testYear2, 'm')
+            # s2.loading()
+            # self.multiStockTest.append(s2)
             self.stockNum = len(self.multiStockTrain)
 
 
@@ -66,20 +68,24 @@ class monthlyModel:
             (xTrains, yTrains) = tc.featureExt(stockData, self.featureNum)
             self.xTrain = np.dstack((self.xTrain, xTrains))
             self.yTrain = np.dstack((self.yTrain, yTrains))
-
-        stockData = tc.technicalCal(self.multiStockTest[0])
-        (xTests, yTests) = tc.featureExt(stockData, self.featureNum)
-        self.xTest = xTests
-        self.yTest = yTests
-        for i in range(1, self.stockNum):
-            stockData = tc.technicalCal(self.multiStockTest[i])
-            (xTests, yTests) = tc.featureExt(stockData, self.featureNum)
-            self.xTest = np.dstack((self.xTest, xTests))
-            self.yTest = np.dstack((self.yTest, yTests))
-            # for j in range(0, self.testSpan):
-                # self.priceDf.set_value(j, i, self.multiStockTest[i].Close[j + 12])
-
+        self.xTest = np.zeros((self.testSpan, self.featureNum, self.stockNum))
+        self.xTest = np.zeros((self.testSpan, 1, self.stockNum))
+        self.xTest = self.xTrain[self.trainSpan - self.testSpan -12:self.trainSpan-12, :, :]
+        self.yTest = self.yTrain[self.trainSpan - self.testSpan -12:self.trainSpan-12, :, :]
+        # stockData = tc.technicalCal(self.multiStockTest[0])
+        # (xTests, yTests) = tc.featureExt(stockData, self.featureNum)
+        # self.xTest = xTests
+        # self.yTest = yTests
+        # for i in range(1, self.stockNum):
+        #     stockData = tc.technicalCal(self.multiStockTest[i])
+        #     (xTests, yTests) = tc.featureExt(stockData, self.featureNum)
+        #     self.xTest = np.dstack((self.xTest, xTests))
+        #     self.yTest = np.dstack((self.yTest, yTests))
+        #     # for j in range(0, self.testSpan):
+        #         # self.priceDf.set_value(j, i, self.multiStockTest[i].Close[j + 12])
+        #
         self.percentDf = pd.DataFrame(self.yTest)
+
         # self.percentDf.to_csv('./resources/percentDf.csv')
         # f1 = open('./resources/multiStockTrain', 'w')
         # np.save(f1, self.xTrain)
