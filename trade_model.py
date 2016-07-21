@@ -4,7 +4,7 @@ import numpy as np
 import heapq
 from download_yahoo import singleStock
 import csv
-import pickle
+import cPickle
 
 class monthlyModel:
     def __init__(self, trainMonth1,trainYear1,trainMonth2, trainYear2, testMonth1, testYear1,
@@ -71,7 +71,7 @@ class monthlyModel:
         self.xTest = np.zeros((self.testSpan, self.featureNum, self.stockNum))
         self.xTest = np.zeros((self.testSpan, 1, self.stockNum))
         self.xTest = self.xTrain[self.trainSpan - self.testSpan -12:self.trainSpan-12, :, :]
-        self.yTest = self.yTrain[self.trainSpan - self.testSpan -12:self.trainSpan-12, :, :]
+        self.yTest = self.yTrain[self.trainSpan - self.testSpan -12:self.trainSpan-12, 0, :]
         # stockData = tc.technicalCal(self.multiStockTest[0])
         # (xTests, yTests) = tc.featureExt(stockData, self.featureNum)
         # self.xTest = xTests
@@ -87,24 +87,21 @@ class monthlyModel:
         self.percentDf = pd.DataFrame(self.yTest)
 
         # self.percentDf.to_csv('./resources/percentDf.csv')
-        # f1 = open('./resources/multiStockTrain', 'w')
-        # np.save(f1, self.xTrain)
-        # f2 = open('./resources/multiStockTest', 'w')
-        # np.save(f2, self.xTest)
-        # f3 = open('./resources/multiStockTrainy', 'w')
-        # np.save(f3, self.yTrain)
+        cPickle.dump(self.xTrain, open("./resources/multiStockTrainx.pkl", "wb"))
+        cPickle.dump(self.yTrain, open("./resources/multiStockTrainy.pkl", "wb"))
+        cPickle.dump(self.xTest, open("./resources/multiStockTestx.pkl", "wb"))
+        cPickle.dump(self.yTest, open("./resources/multiStockTesty.pkl", "wb"))
         return self.xTrain.shape, self.yTrain.shape
 
     def trainFeaturePreHd(self):
-        f1 = open('./resources/multiStockTrain', 'r')
-        self.xTrain = np.load(f1)
-        f2 = open('./resources/multiStockTest', 'r')
-        self.xTest = np.load(f2)
-        f3 = open('./resources/multiStockTrainy', 'r')
-        self.yTrain = np.load(f3)
+        self.xTrain = cPickle.load(open("./resources/multiStockTrainx.pkl", "rb"))
+        self.yTrain = cPickle.load(open("./resources/multiStockTrainy.pkl", "rb"))
+        self.xTest = cPickle.load(open("./resources/multiStockTestx.pkl", "rb"))
+        self.yTest = cPickle.load(open("./resources/multiStockTesty.pkl", "rb"))
+
         self.featureNum = self.xTrain.shape[1]
-        self.stockNum = self.xTrain.shape[2]+1
-        self.percentDf = pd.read_csv('./resources/percentDf.csv')
+        self.stockNum = self.xTrain.shape[2]
+        self.percentDf = pd.DataFrame(self.yTest)
 
     def por10Returns(self, monthCount, predictedReturn):
         indices = heapq.nlargest(10, range(len(predictedReturn)), predictedReturn.take)
