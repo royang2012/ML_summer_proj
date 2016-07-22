@@ -17,7 +17,7 @@ def EMA(df, n):
 
 #Momentum
 def MOM(df, n):
-    M = pd.Series(df['Close'].diff(n), name = 'Momentum_' + str(n))
+    M = pd.Series(df['Aclose'].diff(n), name = 'Momentum_' + str(n))
     df = df.join(M, how='left', lsuffix='', rsuffix='', sort=False)
     return df
 
