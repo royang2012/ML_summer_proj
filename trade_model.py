@@ -34,6 +34,7 @@ class monthlyModel:
         self.trainSpan = 12*(trainYear2-trainYear1) + trainMonth2 - trainMonth1
         self.testSpan = 12*(testYear2-testYear1) + testMonth2 - testMonth1
 
+        self.indices = []
     def monthlyDataDownload(self):
         self.multiStockTrain = []
         self.multiStockTest = []
@@ -45,6 +46,13 @@ class monthlyModel:
             s1 = singleStock(tickerstring, self.trainMonth1, 1, self.trainYear1,
                              self.trainMonth2, 28, self.trainYear2, 'm')
             s1.loading()
+            s1.Aclose.reverse()
+            s1.Close.reverse()
+            s1.Date.reverse()
+            s1.Open.reverse()
+            s1.High.reverse()
+            s1.Low.reverse()
+
             self.multiStockTrain.append(s1)
             # s2 = singleStock(tickerstring, self.testMonth1, 1, self.testYear1-1,
             #                  self.testMonth2, 28, self.testYear2, 'm')
@@ -68,8 +76,8 @@ class monthlyModel:
             (xTrains, yTrains) = tc.featureExt(stockData, self.featureNum)
             self.xTrain = np.dstack((self.xTrain, xTrains))
             self.yTrain = np.dstack((self.yTrain, yTrains))
-        self.xTest = np.zeros((self.testSpan, self.featureNum, self.stockNum))
-        self.xTest = np.zeros((self.testSpan, 1, self.stockNum))
+        # self.xTest = np.zeros((self.testSpan, self.featureNum, self.stockNum))
+        # self.yTest = np.zeros((self.testSpan, 1, self.stockNum))
         self.xTest = self.xTrain[self.trainSpan - self.testSpan -12:self.trainSpan-12, :, :]
         self.yTest = self.yTrain[self.trainSpan - self.testSpan -12:self.trainSpan-12, 0, :]
         # stockData = tc.technicalCal(self.multiStockTest[0])
@@ -104,5 +112,5 @@ class monthlyModel:
         self.percentDf = pd.DataFrame(self.yTest)
 
     def por10Returns(self, monthCount, predictedReturn):
-        indices = heapq.nlargest(10, range(len(predictedReturn)), predictedReturn.take)
-        return self.percentDf.ix[monthCount, indices].mean()
+        self.indices = heapq.nlargest(10, range(len(predictedReturn)), predictedReturn.take)
+        return self.percentDf.ix[monthCount, self.indices].mean()

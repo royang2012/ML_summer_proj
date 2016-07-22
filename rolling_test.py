@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn import svm
 from sklearn import linear_model
-monthData = trade_model.monthlyModel(5, 2009, 5, 2016, 5, 2015, 5, 2016)
+monthData = trade_model.monthlyModel(5, 2009, 5, 2016, 5, 2014, 5, 2016)
 # monthData.monthlyDataDownload()
 # monthData.trainFeaturePre()
 monthData.trainFeaturePreHd()
@@ -25,7 +25,7 @@ for j in range(1, monthData.testSpan):
         # predictedReturn[i] = np.dot(coefficient, monthData.xTest[j, :, i])
         predictedReturn[i] = clf.predict(monthData.xTest[j, :, i])
         reshapeXtrain[i * trainSpan:(i + 1) * trainSpan, :] = monthData.xTrain[j:trainSpan+j, :, i]
-        reshapeYtrain[i * trainSpan:(i + 1) * trainSpan] = monthData.yTrain[j:trainSpan+j, 0, i]
+        reshapeYtrain[i * trainSpan:(i + 1) * trainSpan] = monthData.yTrain[j:trainSpan+j,0, i]
     monthlyReturn[j] = monthData.por10Returns(j, predictedReturn)
     yearReturn = yearReturn * (monthlyReturn[j]+1)
 
