@@ -5,7 +5,7 @@ import numpy as np
 
 def technicalCal(stockData):
     dic = {'date': stockData.Date, 'Open': stockData.Open, 'Close': stockData.Close, 'High': stockData.High,
-           'Low': stockData.Low, 'Volume': stockData.Vol}
+           'Low': stockData.Low, 'Volume': stockData.Vol, 'Aclose': stockData.Aclose}
     df = pd.DataFrame(data=dic)
     # df = technicals.MA(df, 6)
     # df = technicals.EMA(df, 9)
@@ -45,6 +45,6 @@ def featureExt(stockData, featureNum):
     for j in range(12, monthNum - 1):
         y[j - 12] = (stockData['Close'].ix[j+1] - stockData['Close'].ix[j])/stockData['Close'].ix[j]
         # stockData.drop('Close', 1)
-        x[j - 12, :] = np.array(stockData.ix[j, 6:].as_matrix())
+        x[j - 12, :] = np.array(stockData.ix[j, 7:].as_matrix())
     return x, y
 

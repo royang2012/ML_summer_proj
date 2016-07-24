@@ -66,7 +66,7 @@ class monthlyModel:
 
     def trainFeaturePre(self):
         stockData = tc.technicalCal(self.multiStockTrain[0])
-        self.featureNum = stockData.shape[1]-6
+        self.featureNum = stockData.shape[1]-7
         (xTrains, yTrains) = tc.featureExt(stockData, self.featureNum)
         self.xTrain = xTrains
         self.yTrain = yTrains

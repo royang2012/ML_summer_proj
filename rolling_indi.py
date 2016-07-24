@@ -3,10 +3,11 @@ import pandas as pd
 import numpy as np
 from sklearn import svm
 from sklearn import linear_model
+import stockPlot as sp
 monthData = trade_model.monthlyModel(1, 2009, 6, 2014, 6, 2013, 6, 2014)
-monthData.monthlyDataDownload()
-monthData.trainFeaturePre()
-# monthData.trainFeaturePreHd()
+# monthData.monthlyDataDownload()
+# monthData.trainFeaturePre()
+monthData.trainFeaturePreHd()
 trainSpan = len(monthData.xTrain[:,0,0]) - monthData.testSpan
 # reshapeXtrain = np.zeros((trainSpan*monthData.stockNum, monthData.featureNum))
 # reshapeYtrain = np.zeros(trainSpan*monthData.stockNum)
@@ -28,3 +29,4 @@ for j in range(0, monthData.testSpan):
 
 print monthlyReturn
 print 'overall:', yearReturn
+sp.portfolioVSspy(6, 2013, 6, 2014, monthlyReturn)
