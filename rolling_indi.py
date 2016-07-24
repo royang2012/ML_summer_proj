@@ -1,8 +1,9 @@
 import trade_model
 import pandas as pd
 import numpy as np
-from sklearn import svm
-from sklearn import linear_model
+# from sklearn import svm
+# from sklearn import linear_model
+from sklearn.ensemble.forest import RandomForestRegressor
 import stockPlot as sp
 monthData = trade_model.monthlyModel(1, 2009, 6, 2014, 6, 2013, 6, 2014)
 # monthData.monthlyDataDownload()
@@ -16,17 +17,21 @@ trainSpan = len(monthData.xTrain[:,0,0]) - monthData.testSpan
 #     reshapeYtrain[i*trainSpan:(i+1)*trainSpan] = monthData.yTrain[0:trainSpan, 0, i]
 
 # clf = svm.SVR()
-clf = linear_model.LinearRegression()
+clf = RandomForestRegressor(n_estimators=2)
 yearReturn = 1
 predictedReturn = np.zeros(monthData.stockNum)
 monthlyReturn = np.zeros(monthData.testSpan)
+aggReturn = np.zeros(monthData.testSpan+1)
+aggReturn[0] = 1
 for j in range(0, monthData.testSpan):
     for i in range(0, monthData.stockNum):
         clf.fit(monthData.xTrain[j:trainSpan+j, :, i], monthData.yTrain[j:trainSpan+j, 0, i])
         predictedReturn[i] = clf.predict(monthData.xTest[j, :, i])
     monthlyReturn[j] = monthData.por10Returns(j, predictedReturn)
-    yearReturn = yearReturn * (monthlyReturn[j]+1)
+    yearReturn= yearReturn * (monthlyReturn[j]+1)
+    aggReturn[j+1] = aggReturn[j]*(1+monthlyReturn[j])
 
 print monthlyReturn
 print 'overall:', yearReturn
-sp.portfolioVSspy(6, 2013, 6, 2014, monthlyReturn)
+sp.portfolioVSspy(6, 2013, 6, 2014, aggReturn[1:])
+print aggReturn

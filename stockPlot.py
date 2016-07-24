@@ -131,13 +131,16 @@ def portfolioVSspy(m1,y1,m2,y2, pred):
     # calculate the percentage change of s&p 500 index
     s = singleStock('spy', m1, 1, y1, m2, 28, y2, 'm')
     s.loading()
+    s.Aclose.reverse()
+    s.Date.reverse()
     price_array = s.Aclose
-    pct_change_plt = np.zeros(len(price_array)-1)
+    pct_change_plt = np.zeros(len(price_array))
+    pct_change_plt[0] = 1
     for i in range(1, len(price_array)):
-        pct_change_plt[i-1] = (price_array[i] - price_array[i-1])/price_array[i-1]
+        pct_change_plt[i] = pct_change_plt[i-1]*((price_array[i] - price_array[i-1])/price_array[i-1] + 1)
     pct_change_plt = np.array(pct_change_plt)
-    maxY = max(max(pct_change_plt), max(pred))
-    minY = min(min(pct_change_plt), min(pred))
+    # maxY = max(max(pct_change_plt), max(pred))-1
+    # minY = min(min(pct_change_plt), min(pred))
     date_dt = [datetime.strptime(d, '%Y-%m-%d') for d in s.Date]
     date_plt = md.date2num(date_dt)
     date_plt = np.delete(date_plt,0,0)
@@ -149,8 +152,8 @@ def portfolioVSspy(m1,y1,m2,y2, pred):
     ax.set_xlabel('date')
     ax.set_ylabel('Percentage change')
     plt.setp(ax.get_xticklabels(), size=8)
-    plt.ylim([2*minY,2*maxY])
-    ax.plot(date_plt, pct_change_plt, label="S&P benchmark", linewidth=2)
+    # plt.ylim([1,2*maxY])
+    ax.plot(date_plt, pct_change_plt[1:], label="S&P benchmark", linewidth=2)
     ax.plot(date_plt, pred, label="portfolio", linewidth=2)
     plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
                ncol=2, mode="expand", borderaxespad=0.)
