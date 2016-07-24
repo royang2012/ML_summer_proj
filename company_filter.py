@@ -13,12 +13,13 @@ for i in range(0, rowNum):
     if isValid == 1:
         if s.Aclose.__len__()==102:
             closeRatio = map(truediv, s.Close, s.Aclose)
-            if max(closeRatio) < 1.4 and min(closeRatio) > 0.88:
+            if 1:#max(closeRatio) < 1.4 and min(closeRatio) > 0.88:
                 stockData = tc.technicalCal(s)
-                featureNum = stockData.shape[1] - 6
+                featureNum = stockData.shape[1] - 7
                 (xTrains, yTrains) = tc.featureExt(stockData, featureNum)
                 if np.isnan(xTrains).any() == False and np.isinf(xTrains).any() == False:
-                    validCompany.append(ticker)
+                    if yTrains.max()<=0.95 and yTrains.min>=-0.51:
+                        validCompany.append(ticker)
 validCompanyDf = pd.DataFrame(validCompany)
 validCompanyDf.to_csv('./resources/SnP500_his.csv', index=False, header=False)
 
