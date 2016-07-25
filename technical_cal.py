@@ -1,9 +1,24 @@
+""""
+##
+# Created by IntelliJ PyCharm.
+# User: ronyang
+# Date: 7/2/16
+#
+"""
 import pandas as pd
 import technicals
 import numpy as np
 
 
 def technicalCal(stockData):
+    """
+    - The function first converts the list of stock data into a Dataframe with index 'date',
+      'Open', 'Close', 'High', 'Low', 'Aclose' and 'Volume', respectively
+    - Then technical are computed and appended to the Dataframe, these technicals will be used
+      as input features of the prediction machine
+    :param stockData: singleStock instance with data downloaded from Yahoo
+    :return: Dataframe that contains raw data and technicals
+    """
     dic = {'date': stockData.Date, 'Open': stockData.Open, 'Close': stockData.Close, 'High': stockData.High,
            'Low': stockData.Low, 'Volume': stockData.Vol, 'Aclose': stockData.Aclose}
     df = pd.DataFrame(data=dic)
@@ -39,12 +54,21 @@ def technicalCal(stockData):
     return df
 
 def featureExt(stockData, featureNum):
+    """
+    - This function generate feature matrix from technicals
+    :param stockData: singleStock instance with data downloaded from Yahoo
+    :param featureNum: # of features
+    :param x: training feature matrix
+    :param y: percentage return
+    :return:
+    """
     monthNum = len(stockData.index)
     x = np.zeros((monthNum - 13, featureNum))
     y = np.zeros((monthNum - 13, 1))
+    # percentage return is calculated from adjusted close of each month
+    # feature starts at index #7
     for j in range(12, monthNum - 1):
         y[j - 12] = (stockData['Aclose'].ix[j+1] - stockData['Aclose'].ix[j])/stockData['Aclose'].ix[j]
-        # stockData.drop('Close', 1)
         x[j - 12, :] = np.array(stockData.ix[j, 7:].as_matrix())
     return x, y
 

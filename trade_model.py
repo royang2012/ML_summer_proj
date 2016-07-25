@@ -1,3 +1,10 @@
+""""
+##
+# Created by IntelliJ PyCharm.
+# User: ronyang
+# Date: 7/2/16
+#
+"""
 import technical_cal as tc
 import pandas as pd
 import numpy as np
@@ -7,9 +14,24 @@ import csv
 import cPickle
 
 class monthlyModel:
+    """
+    - This class download, process and store the stock data for monthly trading model
+    .. fields::
+        trainMonth1: train starting month
+        trainYear1: train starting year
+        trainMonth2: train ending month
+        trainYear2: train ending year
+        multiStockTrain: list of singleStock instances
+        xTrain: numpy array of training feature matrix
+        yTrain: numpy array of percentage return
+        xTest: xTrain
+        yTest: yTrain
+        priceDf: dataframe of yTest
+        indices: list of indices that corresponds to 10 greatest predicted returns
+    """
     def __init__(self, trainMonth1,trainYear1,trainMonth2, trainYear2, testMonth1, testYear1,
                  testMonth2, testYear2):
-        # time variables initialization
+        #
         self.trainMonth1 = trainMonth1
         self.trainYear1 = trainYear1
         self.trainMonth2 = trainMonth2
@@ -18,9 +40,8 @@ class monthlyModel:
         self.testYear1 = testYear1
         self.testMonth2 = testMonth2
         self.testYear2 = testYear2
-
+        #
         self.multiStockTrain = []
-        self.multiStockTest = []
         self.stockNum = 0
         self.featureNum = 0
 
@@ -35,7 +56,13 @@ class monthlyModel:
         self.testSpan = 12*(testYear2-testYear1) + testMonth2 - testMonth1
 
         self.indices = []
+
     def monthlyDataDownload(self):
+        """
+        - This function call singleStock class
+        - All fields are reversed to make column index consistent with chronosequence
+        :return:
+        """
         self.multiStockTrain = []
         self.multiStockTest = []
         with open('./resources/SnP500_his.csv', 'rb') as f:
@@ -52,12 +79,7 @@ class monthlyModel:
             s1.Open.reverse()
             s1.High.reverse()
             s1.Low.reverse()
-
             self.multiStockTrain.append(s1)
-            # s2 = singleStock(tickerstring, self.testMonth1, 1, self.testYear1-1,
-            #                  self.testMonth2, 28, self.testYear2, 'm')
-            # s2.loading()
-            # self.multiStockTest.append(s2)
             self.stockNum = len(self.multiStockTrain)
 
 
@@ -65,6 +87,10 @@ class monthlyModel:
 
 
     def trainFeaturePre(self):
+        """
+        - This function pre-process the training and testing data, generate numpy arrays
+        :return:
+        """
         stockData = tc.technicalCal(self.multiStockTrain[0])
         self.featureNum = stockData.shape[1]-7
         (xTrains, yTrains) = tc.featureExt(stockData, self.featureNum)
@@ -94,7 +120,7 @@ class monthlyModel:
         #
         self.percentDf = pd.DataFrame(self.yTest)
 
-        # self.percentDf.to_csv('./resources/percentDf.csv')
+        # save to file
         cPickle.dump(self.xTrain, open("./resources/multiStockTrainx.pkl", "wb"))
         cPickle.dump(self.yTrain, open("./resources/multiStockTrainy.pkl", "wb"))
         cPickle.dump(self.xTest, open("./resources/multiStockTestx.pkl", "wb"))
@@ -102,6 +128,10 @@ class monthlyModel:
         return self.xTrain.shape, self.yTrain.shape
 
     def trainFeaturePreHd(self):
+        """
+        - This function read saved data from hard drive
+        :return:
+        """
         self.xTrain = cPickle.load(open("./resources/multiStockTrainx.pkl", "rb"))
         self.yTrain = cPickle.load(open("./resources/multiStockTrainy.pkl", "rb"))
         self.xTest = cPickle.load(open("./resources/multiStockTestx.pkl", "rb"))
@@ -112,5 +142,11 @@ class monthlyModel:
         self.percentDf = pd.DataFrame(self.yTest)
 
     def por10Returns(self, monthCount, predictedReturn):
+        """
+        - This function find the 10-stock portfolio based on prediction
+        :param monthCount: count of testing month
+        :param predictedReturn: percentage return prediction
+        :return: mean of the actual percentage return in portfolio
+        """
         self.indices = heapq.nlargest(10, range(len(predictedReturn)), predictedReturn.take)
         return self.percentDf.ix[monthCount, self.indices].mean()
