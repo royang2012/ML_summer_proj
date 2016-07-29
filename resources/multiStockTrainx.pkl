@@ -8,9 +8,9 @@ p2
 tS'b'
 tRp3
 (I1
-(I41
-I3
-I469
+(L41L
+L3L
+L469L
 tcnumpy
 dtype
 p4

@@ -4,6 +4,9 @@
 # User: ronyang
 # Date: 7/11/16
 #
+- This function test the monthly return prediction model. For simplification, only three features(3m, 6m, 9m momentum)
+  are used.
+- Random forest regressor is used
 """
 
 import trade_model
@@ -35,7 +38,7 @@ for j in range(0, monthData.testSpan):
         clf.fit(monthData.xTrain[j:trainSpan+j, :, i], monthData.yTrain[j:trainSpan+j, 0, i])
         predictedReturn[i] = clf.predict(monthData.xTest[j, :, i])
     monthlyReturn[j] = monthData.por10Returns(j, predictedReturn)
-    yearReturn= totalReturn * (monthlyReturn[j]+1)
+    yearReturn = totalReturn * (monthlyReturn[j]+1)
     aggReturn[j+1] = aggReturn[j]*(1+monthlyReturn[j])
 
 print monthlyReturn

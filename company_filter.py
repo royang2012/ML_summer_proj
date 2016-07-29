@@ -1,3 +1,10 @@
+""""
+##
+# Created by IntelliJ PyCharm.
+# User: ronyang
+# Date: 7/3/16
+#
+"""
 import technical_cal as tc
 from download_yahoo import singleStock
 import pandas as pd

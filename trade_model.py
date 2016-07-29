@@ -22,8 +22,8 @@ class monthlyModel:
         trainMonth2: train ending month
         trainYear2: train ending year
         multiStockTrain: list of singleStock instances
-        xTrain: numpy array of training feature matrix
-        yTrain: numpy array of percentage return
+        xTrain: 3D numpy array of training feature matrix; axis 0: time, axis 1: features, axis 2: companies
+        yTrain: 3D numpy array of percentage return; axis 0: time, axis 1: % return, axis 2: companies
         xTest: xTrain
         yTest: yTrain
         priceDf: dataframe of yTest

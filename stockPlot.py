@@ -1,3 +1,10 @@
+""""
+##
+# Created by IntelliJ PyCharm.
+# User: ronyang
+# Date: 6/22/16
+#
+"""
 from matplotlib.finance import quotes_historical_yahoo_ohlc, candlestick_ohlc
 from matplotlib.dates import DateFormatter, WeekdayLocator, \
     DayLocator, MONDAY
