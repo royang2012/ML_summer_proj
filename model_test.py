@@ -15,7 +15,7 @@ from sklearn.ensemble.forest import RandomForestRegressor
 import stockPlot as sp
 
 # Initiate the monthly trade object
-monthData = trade_model.monthlyModel(1, 2009, 6, 2013, 6, 2012, 6, 2013)
+monthData = trade_model.monthlyModel(1, 2011, 6, 2015, 6, 2014, 6, 2015)
 # Download data from Yahoo finance
 monthData.monthlyDataDownload()
 # Pre-processing of training an testing data
@@ -26,7 +26,7 @@ monthData.trainFeaturePre()
 trainSpan = len(monthData.xTrain[:,0,0]) - monthData.testSpan
 # Initiate a random forest regressor
 clf = RandomForestRegressor(n_estimators=10)
-#
+#d
 totalReturn = 1
 predictedReturn = np.zeros(monthData.stockNum)
 monthlyReturn = np.zeros(monthData.testSpan)
@@ -38,9 +38,9 @@ for j in range(0, monthData.testSpan):
         clf.fit(monthData.xTrain[j:trainSpan+j, :, i], monthData.yTrain[j:trainSpan+j, 0, i])
         predictedReturn[i] = clf.predict(monthData.xTest[j, :, i])
     monthlyReturn[j] = monthData.por10Returns(j, predictedReturn)
-    yearReturn = totalReturn * (monthlyReturn[j]+1)
+    totalReturn = totalReturn * (monthlyReturn[j]+1)
     aggReturn[j+1] = aggReturn[j]*(1+monthlyReturn[j])
 
 print monthlyReturn
 print 'overall:', totalReturn
-sp.portfolioVSspy(6, 2012, 6, 2013, aggReturn[1:])
+sp.portfolioVSspy(6, 2014, 6, 2015, aggReturn[1:])

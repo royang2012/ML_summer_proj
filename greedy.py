@@ -37,9 +37,11 @@ aggReturn[0] = 1
 for k in range(0, monthData.featureNum):
     for j in range(0, monthData.testSpan):
         for i in range(0, monthData.stockNum):
-            shrinkxTrain = np.delete(monthData.xTrain[j:trainSpan+j, :, i], k, axis=1)
+            xTrainCopy = monthData.xTrain[j:trainSpan+j, :, i]
+            shrinkxTrain = np.delete(xTrainCopy, k, axis=1)
             clf.fit(shrinkxTrain, monthData.yTrain[j:trainSpan+j, 0, i])
-            shrinkxTest = np.delete(monthData.xTest[j, :, i], k, axis=1)
+            xTestCopy = monthData.xTest[j, :, i]
+            shrinkxTest = np.delete(xTestCopy, k, axis=0)
             predictedReturn[i] = clf.predict(shrinkxTest)
         monthlyReturn[j] = monthData.por10Returns(j, predictedReturn)
         totalReturn[k] *= monthlyReturn[j] + 1

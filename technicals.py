@@ -5,13 +5,13 @@ import math as m
 
 # Moving Average
 def MA(df, n):
-    MA = pd.Series(pd.rolling_mean(df['Close'], n), name = 'MA_' + str(n))
+    MA = pd.Series(pd.rolling_mean(df['Aclose'], n), name = 'MA_' + str(n))
     df = df.join(MA, how='left', lsuffix='', rsuffix='', sort=False)
     return df
 
 # Exponential Moving Average
 def EMA(df, n):
-    EMA = pd.Series(pd.ewma(df['Close'], span = n, min_periods = n - 1), name = 'EMA_' + str(n))
+    EMA = pd.Series(pd.ewma(df['Aclose'], span = n, min_periods = n - 1), name = 'EMA_' + str(n))
     df = df.join(EMA, how='left', lsuffix='', rsuffix='', sort=False)
     return df
 
@@ -23,8 +23,8 @@ def MOM(df, n):
 
 #Rate of Change
 def ROC(df, n):
-    M = df['Close'].diff(n - 1)
-    N = df['Close'].shift(n - 1)
+    M = df['Aclose'].diff(n - 1)
+    N = df['Aclose'].shift(n - 1)
     ROC = pd.Series(M / N, name = 'ROC_' + str(n))
     df = df.join(ROC, how='left', lsuffix='', rsuffix='', sort=False)
     return df
@@ -44,8 +44,8 @@ def ATR(df, n):
 
 #Bollinger Bands
 def BBANDS(df, n):
-    MA = pd.Series(pd.rolling_mean(df['Close'], n))
-    MSD = pd.Series(pd.rolling_std(df['Close'], n))
+    MA = pd.Series(pd.rolling_mean(df['Aclose'], n))
+    MSD = pd.Series(pd.rolling_std(df['Aclose'], n))
     b1 = 4 * MSD / MA
     B1 = pd.Series(b1, name = 'BollingerB_' + str(n))
     df = df.join(B1, how='left', lsuffix='', rsuffix='', sort=False)
@@ -83,7 +83,7 @@ def STO(df, n):
 
 #Trix
 def TRIX(df, n):
-    EX1 = pd.ewma(df['Close'], span = n, min_periods = n - 1)
+    EX1 = pd.ewma(df['Aclose'], span = n, min_periods = n - 1)
     EX2 = pd.ewma(EX1, span = n, min_periods = n - 1)
     EX3 = pd.ewma(EX2, span = n, min_periods = n - 1)
     i = 0
@@ -131,8 +131,8 @@ def ADX(df, n, n_ADX):
 
 #MACD, MACD Signal and MACD difference
 def MACD(df, n_fast, n_slow):
-    EMAfast = pd.Series(pd.ewma(df['Close'], span = n_fast, min_periods = n_slow - 1))
-    EMAslow = pd.Series(pd.ewma(df['Close'], span = n_slow, min_periods = n_slow - 1))
+    EMAfast = pd.Series(pd.ewma(df['Aclose'], span = n_fast, min_periods = n_slow - 1))
+    EMAslow = pd.Series(pd.ewma(df['Aclose'], span = n_slow, min_periods = n_slow - 1))
     MACD = pd.Series(EMAfast - EMAslow, name = 'MACD_' + str(n_fast) + '_' + str(n_slow))
     MACDsign = pd.Series(pd.ewma(MACD, span = 9, min_periods = 8), name = 'MACDsign_' + str(n_fast) + '_' + str(n_slow))
     MACDdiff = pd.Series(MACD - MACDsign, name = 'MACDdiff_' + str(n_fast) + '_' + str(n_slow))
@@ -268,11 +268,11 @@ def OBV(df, n):
     i = 0
     OBV = [0]
     while i < df.index[-1]:
-        if df.get_value(i + 1, 'Close') - df.get_value(i, 'Close') > 0:
+        if df.get_value(i + 1, 'Aclose') - df.get_value(i, 'Aclose') > 0:
             OBV.append(df.get_value(i + 1, 'Volume'))
-        if df.get_value(i + 1, 'Close') - df.get_value(i, 'Close') == 0:
+        if df.get_value(i + 1, 'Aclose') - df.get_value(i, 'Aclose') == 0:
             OBV.append(0)
-        if df.get_value(i + 1, 'Close') - df.get_value(i, 'Close') < 0:
+        if df.get_value(i + 1, 'Aclose') - df.get_value(i, 'Aclose') < 0:
             OBV.append(-df.get_value(i + 1, 'Volume'))
         i = i + 1
     OBV = pd.Series(OBV)
@@ -282,7 +282,7 @@ def OBV(df, n):
 
 #Force Index
 def FORCE(df, n):
-    F = pd.Series(df['Close'].diff(n) * df['Volume'].diff(n), name = 'Force_' + str(n))
+    F = pd.Series(df['Aclose'].diff(n) * df['Volume'].diff(n), name = 'Force_' + str(n))
     df = df.join(F, how='left', lsuffix='', rsuffix='', sort=False)
     return df
 
@@ -302,11 +302,11 @@ def CCI(df, n):
 
 #Coppock Curve
 def COPP(df, n):
-    M = df['Close'].diff(int(n * 11 / 10) - 1)
-    N = df['Close'].shift(int(n * 11 / 10) - 1)
+    M = df['Aclose'].diff(int(n * 11 / 10) - 1)
+    N = df['Aclose'].shift(int(n * 11 / 10) - 1)
     ROC1 = M / N
-    M = df['Close'].diff(int(n * 14 / 10) - 1)
-    N = df['Close'].shift(int(n * 14 / 10) - 1)
+    M = df['Aclose'].diff(int(n * 14 / 10) - 1)
+    N = df['Aclose'].shift(int(n * 14 / 10) - 1)
     ROC2 = M / N
     Copp = pd.Series(pd.ewma(ROC1 + ROC2, span = n, min_periods = n), name = 'Copp_' + str(n))
     df = df.join(Copp, how='left', lsuffix='', rsuffix='', sort=False)
@@ -356,5 +356,5 @@ def DONCH(df, n):
 
 #Standard Deviation
 def STDDEV(df, n):
-    df = df.join(pd.Series(pd.rolling_std(df['Close'], n), name = 'STD_' + str(n)), how='left', lsuffix='', rsuffix='', sort=False  )
+    df = df.join(pd.Series(pd.rolling_std(df['Aclose'], n), name = 'STD_' + str(n)), how='left', lsuffix='', rsuffix='', sort=False  )
     return df
