@@ -15,10 +15,10 @@ companyList = pd.read_csv('./resources/SnP500History.csv')
 rowNum = companyList.shape[0]
 for i in range(0, rowNum):
     ticker = companyList.iloc[i]['Ticker']
-    s = singleStock(ticker, 1, 1, 2008, 6, 28, 2016, 'm')
+    s = singleStock(ticker, 1, 1, 2007, 6, 28, 2016, 'm')
     isValid = s.loading()
     if isValid == 1:
-        if s.Aclose.__len__()==102:
+        if s.Aclose.__len__()==114:
             closeRatio = map(truediv, s.Close, s.Aclose)
             if 1:#max(closeRatio) < 1.4 and min(closeRatio) > 0.88:
                 stockData = tc.technicalCal(s)

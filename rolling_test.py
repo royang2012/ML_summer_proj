@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn import svm
 from sklearn import linear_model
-monthData = trade_model.monthlyModel(5, 2009, 5, 2016, 5, 2014, 5, 2016)
+monthData = trade_model.monthlyModel(5, 2008, 5, 2016, 5, 2011, 5, 2016)
 # monthData.monthlyDataDownload()
 # monthData.trainFeaturePre()
 monthData.trainFeaturePreHd()
